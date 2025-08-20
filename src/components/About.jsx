@@ -88,7 +88,7 @@ const About = () => {
                 </p>
 
                 <p className="text-lg">
-                  I work with{" "}
+                  Worked with{" "}
                   <span className="font-semibold text-purple-600">
                     C++, Python, JavaScript, and C#
                   </span>{" "}

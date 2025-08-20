@@ -39,6 +39,7 @@ const Projects = () => {
         "MongoDB",
         "Express.js",
         "Tailwindcss",
+        "Redux",
       ],
       githubUrl: "https://github.com/HARRISAMIN432/Real-Estate-App",
     },
@@ -46,14 +47,26 @@ const Projects = () => {
       title: "AI Stroke Predictor",
       description:
         "An AI-powered application that predicts stroke risk using machine learning algorithms. Built with Python and advanced data analysis techniques for healthcare applications.",
-      technologies: ["Python", "Machine Learning", "Data Analysis"],
+      technologies: [
+        "Python",
+        "Machine Learning",
+        "Data Analysis",
+        "skicit-learn",
+      ],
       githubUrl: "https://github.com/HARRISAMIN432/AI-Final-Project",
     },
     {
       title: "Blog Application",
       description:
         "A full-featured AI powered blogging platform with user authentication, post creation, commenting system, and responsive design. Built with modern web technologies for optimal performance.",
-      technologies: ["React", "Node.js", "Express.js", "MongoDB", "Gemini"],
+      technologies: [
+        "React",
+        "Node.js",
+        "Express.js",
+        "MongoDB",
+        "Gemini",
+        "Redux",
+      ],
       githubUrl: "https://github.com/HARRISAMIN432/Blog-App",
     },
     {
