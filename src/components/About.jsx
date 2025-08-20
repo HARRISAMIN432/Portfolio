@@ -35,14 +35,14 @@ const About = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
   <div className="space-y-6">
     <p className="text-lg text-gray-700">
-      I’m a dedicated full-stack developer with a strong foundation in problem-solving and software design. 
+      I’m a dedicated full-stack developer with a strong foundation in problem-solving. 
       Having solved 350+ problems on LeetCode and 150+ on Codeforces, I’ve sharpened my ability to write efficient, 
-      optimized code and approach challenges with a competitive programming mindset.
+      optimized code.
     </p>
     <p className="text-lg text-gray-700">
       My technical expertise covers multiple languages, including C++, Python, JavaScript, and C#, alongside 
       frameworks like React, Node.js, and modern databases. I enjoy turning complex ideas into practical solutions— 
-      from building AI-driven applications to developing scalable, production-ready full-stack systems.
+      developing scalable, production-ready full-stack systems.
     </p>
     <p className="text-lg text-gray-700">
       Based in Lahore, Pakistan, I’m continuously learning, exploring new technologies, and working on projects 
