@@ -38,7 +38,7 @@ const Header = ({ activeSection, setActiveSection }) => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between py-4">
           <div className="text-2xl font-bold text-white">
-            Harris Portfolio
+            Portfolio
           </div>
 
           <nav className="hidden md:flex space-x-8">
@@ -60,7 +60,7 @@ const Header = ({ activeSection, setActiveSection }) => {
                className="text-white hover:text-blue-400 transition-colors">
               <Github size={20} />
             </a>
-            <a href="http:downd" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.linkedin.com/in/harris-amin-32a90a2a7/" target="_blank" rel="noopener noreferrer"
                className="text-white hover:text-blue-400 transition-colors">
               <Linkedin size={20} />
             </a>

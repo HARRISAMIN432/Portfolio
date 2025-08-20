@@ -59,7 +59,6 @@ const Contact = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
           <div className="space-y-8">
             <div>
               <h3 className="text-2xl font-bold text-white mb-6">
@@ -91,7 +90,6 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* Contact Form */}
           <div className="bg-gray-800 rounded-lg p-8">
             <h3 className="text-2xl font-bold text-white mb-6">
               Send a Message
@@ -116,7 +114,6 @@ const Contact = () => {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none"
-                  placeholder="John Doe"
                 />
               </div>
 
@@ -132,7 +129,6 @@ const Contact = () => {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none"
-                  placeholder="john@example.com"
                 />
               </div>
 
@@ -148,7 +144,6 @@ const Contact = () => {
                   required
                   rows={5}
                   className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none resize-none"
-                  placeholder="Tell me about your project..."
                 ></textarea>
               </div>
 
