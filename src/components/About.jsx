@@ -28,7 +28,7 @@ const About = () => {
 
   const stats = [
     { number: "350+", label: "LeetCode Problems" },
-    { number: "150+", label: "Codeforces Solutions" },
+    { number: "130+", label: "Codeforces Solutions" },
     { number: "10+", label: "Projects" },
   ];
 
