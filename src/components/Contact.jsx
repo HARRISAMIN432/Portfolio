@@ -197,7 +197,7 @@ const Contact = () => {
             </h2>
 
             <p className="text-slate-400 text-lg font-light leading-relaxed max-w-md">
-              Open to internships, collaborations, and exciting projects
+              Open to work, collaborations, and exciting projects
               anywhere in the world. Let's create something remarkable.
             </p>
 

@@ -174,7 +174,7 @@ const Hero = () => {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/25 bg-blue-500/5">
               <Zap size={10} className="text-blue-400 fill-blue-400" />
               <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-blue-400 uppercase">
-                Available for Internships
+                Available for Work
               </span>
             </div>
             <div className="h-px flex-1 max-w-[60px] bg-gradient-to-r from-blue-500/40 to-transparent" />
