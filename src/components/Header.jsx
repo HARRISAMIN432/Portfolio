@@ -5,7 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Global Flashlight Cursor (mounted once here, affects whole site) ──
+// ── Global Flashlight Cursor ──────────────────────────────────────────
 export const FlashlightCursor = () => {
   const lightRef = useRef();
   const dotRef = useRef();
@@ -34,7 +34,6 @@ export const FlashlightCursor = () => {
     };
     loop();
 
-    // Cursor expand on hover
     const expand = () =>
       dotRef.current?.classList.add(
         "!w-8",
@@ -66,12 +65,10 @@ export const FlashlightCursor = () => {
 
   return (
     <>
-      {/* Flashlight overlay */}
       <div
         ref={lightRef}
         className="fixed inset-0 z-[9990] pointer-events-none hidden md:block"
       />
-      {/* Cursor dot */}
       <div
         ref={dotRef}
         className="fixed z-[9999] pointer-events-none hidden md:block w-2 h-2 rounded-full bg-blue-400 -translate-x-1/2 -translate-y-1/2 transition-all duration-150 mix-blend-difference"
@@ -81,7 +78,7 @@ export const FlashlightCursor = () => {
   );
 };
 
-// ── Header ─────────────────────────────────────────────────────────────
+// ── Header ────────────────────────────────────────────────────────────
 const Header = ({ activeSection, setActiveSection }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -95,10 +92,11 @@ const Header = ({ activeSection, setActiveSection }) => {
     { name: "About", href: "about" },
     { name: "Skills", href: "skills" },
     { name: "Projects", href: "projects" },
+    { name: "Achievements", href: "achievements" },
     { name: "Contact", href: "contact" },
   ];
 
-  // Sliding pill
+  // Sliding pill indicator
   useEffect(() => {
     const idx = navigation.findIndex((n) => n.href === activeSection);
     if (idx < 0 || !itemRefs.current[idx] || !navRef.current) return;
@@ -109,27 +107,16 @@ const Header = ({ activeSection, setActiveSection }) => {
       left: elRect.left - navRect.left,
       width: elRect.width,
       opacity: 1,
-      duration: 0.45,
+      duration: 0.4,
       ease: "power3.out",
     });
   }, [activeSection]);
 
-  // Scroll shrink
+  // Scroll state
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Entrance
-  useEffect(() => {
-    gsap.from(headerRef.current, {
-      y: -100,
-      opacity: 0,
-      duration: 1.2,
-      ease: "power4.out",
-      delay: 0.2,
-    });
   }, []);
 
   const scrollTo = (id) => {
@@ -139,21 +126,26 @@ const Header = ({ activeSection, setActiveSection }) => {
   };
 
   return (
-    <div className="z-50">
+    <>
       <FlashlightCursor />
+
       <header
         ref={headerRef}
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          scrolled
-            ? "py-3 bg-[#02040f]/80 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_1px_30px_rgba(0,0,0,0.5)]"
-            : "py-6 bg-transparent"
-        }`}
+        className="fixed top-0 w-full z-50 transition-all duration-500 backdrop-blur-xl"
+        style={{
+          backgroundColor: scrolled ? "rgba(2,4,15,0.95)" : "rgba(2,4,15,0.75)",
+          borderBottom: scrolled
+            ? "1px solid rgba(255,255,255,0.07)"
+            : "1px solid rgba(255,255,255,0.04)",
+          boxShadow: scrolled ? "0 1px 40px rgba(0,0,0,0.7)" : "none",
+          padding: scrolled ? "12px 0" : "20px 0",
+        }}
       >
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
-          {/* Logo — animated brackets */}
+          {/* Logo */}
           <button
             onClick={() => scrollTo("home")}
-            className="group flex items-center gap-1.5"
+            className="group flex items-center gap-1.5 flex-shrink-0"
           >
             <span className="text-blue-500 font-mono text-lg font-bold group-hover:text-blue-400 transition-colors">
               [
@@ -170,84 +162,132 @@ const Header = ({ activeSection, setActiveSection }) => {
           {/* Desktop Nav */}
           <nav
             ref={navRef}
-            className="hidden md:flex items-center gap-1 relative"
+            className="hidden lg:flex items-center gap-0.5 relative"
           >
+            {/* Sliding pill */}
             <div
               ref={pillRef}
               className="absolute h-7 rounded-full bg-blue-500/10 border border-blue-500/25 pointer-events-none"
-              style={{ opacity: 0, top: "50%", transform: "translateY(-50%)" }}
+              style={{
+                opacity: 0,
+                top: "50%",
+                transform: "translateY(-50%)",
+                left: 0,
+                width: 60,
+              }}
             />
             {navigation.map((item, i) => (
               <button
                 key={item.name}
                 ref={(el) => (itemRefs.current[i] = el)}
                 onClick={() => scrollTo(item.href)}
-                className={`relative px-4 py-1.5 text-[11px] font-bold tracking-[0.18em] uppercase transition-colors duration-200 rounded-full ${
-                  activeSection === item.href
-                    ? "text-blue-400"
-                    : "text-slate-500 hover:text-slate-200"
-                }`}
+                className="relative px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-200 rounded-full"
+                style={{
+                  color: activeSection === item.href ? "#60a5fa" : "#64748b",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeSection !== item.href)
+                    e.currentTarget.style.color = "#e2e8f0";
+                }}
+                onMouseLeave={(e) => {
+                  if (activeSection !== item.href)
+                    e.currentTarget.style.color = "#64748b";
+                }}
               >
                 {item.name}
               </button>
             ))}
           </nav>
 
-          {/* Social Icons */}
-          <div className="hidden md:flex items-center gap-4">
-            {[
-              {
-                href: "https://github.com/HARRISAMIN432",
-                icon: <Github size={16} />,
-              },
-              {
-                href: "https://www.linkedin.com/in/harris-amin-32a90a2a7/",
-                icon: <Linkedin size={16} />,
-              },
-              {
-                href: "mailto:harrisaminjutt@gmail.com",
-                icon: <Mail size={16} />,
-              },
-            ].map(({ href, icon }, i) => (
-              <a
-                key={i}
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className="text-slate-600 hover:text-white transition-all duration-200 hover:drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"
-              >
-                {icon}
-              </a>
-            ))}
-          </div>
+          {/* Right side */}
+          <div className="flex items-center gap-4">
+            {/* Social icons — desktop only */}
+            <div className="hidden md:flex items-center gap-4">
+              {[
+                {
+                  href: "https://github.com/HARRISAMIN432",
+                  icon: <Github size={16} />,
+                },
+                {
+                  href: "https://www.linkedin.com/in/harris-amin-32a90a2a7/",
+                  icon: <Linkedin size={16} />,
+                },
+                {
+                  href: "mailto:harrisaminjutt@gmail.com",
+                  icon: <Mail size={16} />,
+                },
+              ].map(({ href, icon }, i) => (
+                <a
+                  key={i}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-slate-600 hover:text-white transition-all duration-200 hover:drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"
+                >
+                  {icon}
+                </a>
+              ))}
+            </div>
 
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-white"
-          >
-            {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+            {/* Mobile toggle */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="lg:hidden text-white p-1"
+            >
+              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 w-full bg-[#02040f]/95 backdrop-blur-2xl border-b border-white/10 px-8 py-6 flex flex-col gap-5">
+          <div
+            className="lg:hidden absolute top-full left-0 w-full border-b border-white/10 px-8 py-6 flex flex-col gap-5"
+            style={{
+              backgroundColor: "rgba(2,4,15,0.98)",
+              backdropFilter: "blur(24px)",
+            }}
+          >
             {navigation.map((item) => (
               <button
                 key={item.name}
                 onClick={() => scrollTo(item.href)}
-                className={`text-left text-2xl font-black uppercase tracking-tighter transition-colors ${
-                  activeSection === item.href ? "text-blue-400" : "text-white"
-                }`}
+                className="text-left text-2xl font-black uppercase tracking-tighter transition-colors"
+                style={{
+                  color: activeSection === item.href ? "#60a5fa" : "#ffffff",
+                }}
               >
                 {item.name}
               </button>
             ))}
+            <div className="flex gap-5 pt-2 border-t border-white/10 mt-2">
+              <a
+                href="https://github.com/HARRISAMIN432"
+                target="_blank"
+                rel="noreferrer"
+                className="text-slate-500 hover:text-white transition-colors"
+              >
+                <Github size={18} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/harris-amin-32a90a2a7/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-slate-500 hover:text-white transition-colors"
+              >
+                <Linkedin size={18} />
+              </a>
+              <a
+                href="mailto:harrisaminjutt@gmail.com"
+                className="text-slate-500 hover:text-white transition-colors"
+              >
+                <Mail size={18} />
+              </a>
+            </div>
           </div>
         )}
       </header>
-    </div>
+    </>
   );
 };
 

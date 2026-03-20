@@ -5,25 +5,28 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Skill orb node ────────────────────────────────────────────────────
-const SkillNode = ({ skill, angle, radius, delay, accent }) => {
-  const ref = useRef();
+const SkillNode = ({ skill, angle, radius, accent }) => {
   const x = Math.cos(angle) * radius;
   const y = Math.sin(angle) * radius;
-
   return (
     <div
-      ref={ref}
       className="skill-node absolute -translate-x-1/2 -translate-y-1/2 group cursor-default"
       style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
     >
       <div
-        className={`px-4 py-2 rounded-full border bg-[#02040f] text-xs font-mono font-bold tracking-wider
-        transition-all duration-400 whitespace-nowrap
-        ${accent}
-        border-current/20 hover:bg-current/10 hover:scale-110 hover:shadow-[0_0_20px_currentColor]`}
+        className={`px-4 py-2 rounded-full text-xs font-mono font-bold tracking-wider
+          whitespace-nowrap transition-all duration-300 ${accent}
+          hover:scale-110`}
         style={{
-          borderColor: "rgba(255,255,255,0.08)",
-          "--tw-shadow-color": "rgba(59,130,246,0.3)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          backgroundColor: "#02040f",
+          boxShadow: "none",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = "0 0 18px currentColor";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = "none";
         }}
       >
         {skill}
@@ -32,25 +35,30 @@ const SkillNode = ({ skill, angle, radius, delay, accent }) => {
   );
 };
 
-// ── Horizontal category bar ───────────────────────────────────────────
+// ── Category bar ──────────────────────────────────────────────────────
 const CategoryBar = ({ cat, index, isActive, onClick }) => (
   <button
     onClick={onClick}
-    className={`skill-bar group flex items-start gap-5 p-6 rounded-2xl border text-left transition-all duration-400 w-full
-      ${
-        isActive
-          ? "border-blue-500/30 bg-blue-500/5"
-          : "border-white/[0.05] bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]"
-      }`}
+    className="skill-bar group flex items-start gap-5 p-6 rounded-2xl text-left w-full transition-all duration-300"
+    style={{
+      border: isActive
+        ? "1px solid rgba(59,130,246,0.3)"
+        : "1px solid rgba(255,255,255,0.05)",
+      backgroundColor: isActive
+        ? "rgba(59,130,246,0.05)"
+        : "rgba(255,255,255,0.02)",
+    }}
   >
     <span
-      className={`font-mono text-sm font-bold mt-0.5 transition-colors ${isActive ? "text-blue-400" : "text-slate-700 group-hover:text-slate-500"}`}
+      className="font-mono text-sm font-bold mt-0.5 transition-colors flex-shrink-0"
+      style={{ color: isActive ? "#60a5fa" : "#334155" }}
     >
       0{index + 1}
     </span>
     <div className="flex-1 min-w-0">
       <div
-        className={`text-sm font-bold uppercase tracking-widest mb-3 transition-colors ${isActive ? "text-white" : "text-slate-500 group-hover:text-slate-300"}`}
+        className="text-sm font-bold uppercase tracking-widest mb-3"
+        style={{ color: isActive ? "#ffffff" : "#64748b" }}
       >
         {cat.title}
       </div>
@@ -58,12 +66,16 @@ const CategoryBar = ({ cat, index, isActive, onClick }) => (
         {cat.skills.map((s, i) => (
           <span
             key={i}
-            className={`text-[10px] font-mono px-2.5 py-1 rounded-full border transition-all duration-300
-              ${
-                isActive
-                  ? "border-blue-500/30 text-blue-300 bg-blue-500/10"
-                  : "border-white/[0.06] text-slate-600 group-hover:text-slate-400"
-              }`}
+            className="text-[10px] font-mono px-2.5 py-1 rounded-full transition-all duration-300"
+            style={{
+              border: isActive
+                ? "1px solid rgba(59,130,246,0.3)"
+                : "1px solid rgba(255,255,255,0.06)",
+              color: isActive ? "#93c5fd" : "#475569",
+              backgroundColor: isActive
+                ? "rgba(59,130,246,0.1)"
+                : "transparent",
+            }}
           >
             {s}
           </span>
@@ -114,33 +126,25 @@ const Skills = () => {
     },
   ];
 
-  // All skills flattened for the orbital display
-  const allSkills = categories.flatMap((c, ci) =>
-    c.skills.map((s) => ({ name: s, color: c.color, cat: ci })),
+  const allSkills = categories.flatMap((c) =>
+    c.skills.map((s) => ({ name: s, color: c.color })),
   );
 
-  // Position skills on concentric orbits
-  const getOrbitLayout = () => {
-    const orbits = [
-      { skills: allSkills.slice(0, 6), radius: 160 },
-      { skills: allSkills.slice(6, 14), radius: 240 },
-      { skills: allSkills.slice(14), radius: 310 },
-    ];
-    return orbits
-      .map(({ skills, radius }) =>
-        skills.map((s, i) => ({
-          ...s,
-          angle: (i / skills.length) * Math.PI * 2 - Math.PI / 2,
-          radius,
-        })),
-      )
-      .flat();
-  };
-  const nodes = getOrbitLayout();
+  const nodes = [
+    { skills: allSkills.slice(0, 6), radius: 155 },
+    { skills: allSkills.slice(6, 14), radius: 230 },
+    { skills: allSkills.slice(14), radius: 298 },
+  ].flatMap(({ skills, radius }) =>
+    skills.map((s, i) => ({
+      ...s,
+      angle: (i / skills.length) * Math.PI * 2 - Math.PI / 2,
+      radius,
+    })),
+  );
 
   useEffect(() => {
     if (!secRef.current) return;
-    let ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       gsap.from(".sk-headline > *", {
         y: 60,
         opacity: 0,
@@ -150,22 +154,21 @@ const Skills = () => {
         scrollTrigger: { trigger: secRef.current, start: "top 75%" },
       });
       gsap.from(".skill-bar", {
-        x: 60,
+        x: -50,
         opacity: 0,
-        duration: 0.8,
+        duration: 0.7,
         stagger: 0.1,
         ease: "power3.out",
-        scrollTrigger: { trigger: ".skill-bar", start: "top 80%" },
+        scrollTrigger: { trigger: secRef.current, start: "top 70%" },
       });
       gsap.from(".skill-node", {
         scale: 0,
         opacity: 0,
-        duration: 0.6,
-        stagger: 0.04,
+        duration: 0.5,
+        stagger: 0.03,
         ease: "back.out(2)",
         scrollTrigger: { trigger: ".orbit-area", start: "top 75%" },
       });
-      // Orbit rings rotate on scroll
       gsap.to(".orbit-ring-1", {
         rotate: 360,
         duration: 40,
@@ -175,6 +178,12 @@ const Skills = () => {
       gsap.to(".orbit-ring-2", {
         rotate: -360,
         duration: 60,
+        repeat: -1,
+        ease: "none",
+      });
+      gsap.to(".orbit-ring-3", {
+        rotate: 360,
+        duration: 80,
         repeat: -1,
         ease: "none",
       });
@@ -188,7 +197,7 @@ const Skills = () => {
       ref={secRef}
       className="py-32 relative overflow-hidden"
     >
-      {/* Huge bg text */}
+      {/* Bg section number */}
       <div
         className="absolute top-0 left-0 text-[20rem] font-black leading-none select-none pointer-events-none"
         style={{
@@ -200,13 +209,28 @@ const Skills = () => {
         03
       </div>
 
+      {/* Ambient glow */}
+      <div
+        className="absolute top-1/2 left-1/4 w-[400px] h-[400px] -translate-y-1/2 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(59,130,246,0.04) 0%, transparent 70%)",
+        }}
+      />
+
       <div className="max-w-7xl mx-auto px-8">
-        {/* Label */}
+        {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
           <span className="text-blue-500 font-mono text-xs tracking-[0.5em] uppercase">
             03 / SKILLS
           </span>
-          <div className="h-px flex-1 max-w-xs bg-gradient-to-r from-blue-500/30 to-transparent" />
+          <div
+            className="h-px flex-1 max-w-xs"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(59,130,246,0.3), transparent)",
+            }}
+          />
         </div>
 
         {/* Headline */}
@@ -228,54 +252,9 @@ const Skills = () => {
           </h2>
         </div>
 
-        {/* Two-column: orbital + list */}
-        <div className="grid lg:grid-cols-[1fr_420px] gap-16 items-center">
-          {/* ── Orbital visualization ──────────────────── */}
-          <div className="orbit-area relative h-[680px] hidden lg:block">
-            {/* Center core */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-              <div className="relative">
-                <div className="w-20 h-20 rounded-full bg-blue-500/15 border border-blue-500/30 flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/30 border border-blue-400/50 flex items-center justify-center">
-                    <div className="w-4 h-4 rounded-full bg-blue-400" />
-                  </div>
-                </div>
-                {/* Pulse rings */}
-                <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-[ping_3s_ease-in-out_infinite]" />
-                <div className="absolute inset-[-8px] rounded-full border border-blue-500/10 animate-[ping_3s_ease-in-out_infinite_0.5s]" />
-              </div>
-            </div>
-
-            {/* Orbit circles (decorative) */}
-            {[170, 250, 320].map((r, i) => (
-              <div
-                key={i}
-                className={`orbit-ring-${i + 1} absolute top-1/2 left-1/2 rounded-full border pointer-events-none`}
-                style={{
-                  width: r * 2,
-                  height: r * 2,
-                  marginLeft: -r,
-                  marginTop: -r,
-                  borderColor: `rgba(59,130,246,${0.06 - i * 0.015})`,
-                  borderStyle: "dashed",
-                }}
-              />
-            ))}
-
-            {/* Skill nodes */}
-            {nodes.map((node, i) => (
-              <SkillNode
-                key={i}
-                skill={node.name}
-                angle={node.angle}
-                radius={node.radius}
-                accent={node.color}
-                delay={i * 0.05}
-              />
-            ))}
-          </div>
-
-          {/* ── Category list ─────────────────────────── */}
+        {/* ── Two-column: category list LEFT, orbital RIGHT ── */}
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* LEFT — Category bars (always visible) */}
           <div className="flex flex-col gap-3">
             {categories.map((cat, i) => (
               <CategoryBar
@@ -287,6 +266,91 @@ const Skills = () => {
               />
             ))}
           </div>
+
+          {/* RIGHT — Orbital (desktop only) */}
+          <div className="orbit-area relative h-[640px] hidden lg:block">
+            {/* Orbit ring decorations */}
+            {[
+              { r: 170, cls: "orbit-ring-1" },
+              { r: 248, cls: "orbit-ring-2" },
+              { r: 316, cls: "orbit-ring-3" },
+            ].map(({ r, cls }, i) => (
+              <div
+                key={i}
+                className={`${cls} absolute top-1/2 left-1/2 rounded-full pointer-events-none`}
+                style={{
+                  width: r * 2,
+                  height: r * 2,
+                  marginLeft: -r,
+                  marginTop: -r,
+                  border: `1px dashed rgba(59,130,246,${0.07 - i * 0.02})`,
+                }}
+              />
+            ))}
+
+            {/* Core */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+              <div className="relative">
+                <div
+                  className="w-20 h-20 rounded-full flex items-center justify-center"
+                  style={{
+                    background: "rgba(59,130,246,0.12)",
+                    border: "1px solid rgba(59,130,246,0.3)",
+                  }}
+                >
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{
+                      background: "rgba(59,130,246,0.25)",
+                      border: "1px solid rgba(96,165,250,0.5)",
+                    }}
+                  >
+                    <div className="w-4 h-4 rounded-full bg-blue-400" />
+                  </div>
+                </div>
+                {/* Pulse rings */}
+                <div
+                  className="absolute inset-0 rounded-full border border-blue-500/20 animate-ping"
+                  style={{ animationDuration: "3s" }}
+                />
+                <div
+                  className="absolute rounded-full border border-blue-500/10 animate-ping"
+                  style={{
+                    inset: "-8px",
+                    animationDuration: "3s",
+                    animationDelay: "0.5s",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Skill nodes */}
+            {nodes.map((node, i) => (
+              <SkillNode
+                key={i}
+                skill={node.name}
+                angle={node.angle}
+                radius={node.radius}
+                accent={node.color}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile: show all skills as flat tags */}
+        <div className="lg:hidden mt-12 flex flex-wrap gap-2">
+          {allSkills.map((s, i) => (
+            <span
+              key={i}
+              className={`text-xs font-mono px-3 py-1.5 rounded-full ${s.color}`}
+              style={{
+                border: "1px solid rgba(255,255,255,0.08)",
+                backgroundColor: "rgba(255,255,255,0.03)",
+              }}
+            >
+              {s.name}
+            </span>
+          ))}
         </div>
       </div>
     </section>

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import me from "../assets/me.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -180,7 +181,7 @@ const About = () => {
         <div className="grid lg:grid-cols-[380px_1fr] gap-20 items-start">
           {/* ── LEFT: Photo ──────────────────────────────── */}
           <div className="ab-left">
-            <img src="react-vite-deploy/me.png" />
+            <img src={me} alt="me" />
           </div>
 
           {/* ── RIGHT: Text + Stats ──────────────────────── */}
