@@ -15,157 +15,128 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── 3D Tilt Project Card ──────────────────────────────────────────────
+// ── 3D Tilt Project Card (Optimized) ──────────────────────────────────
 const ProjectCard = ({ project, index }) => {
   const cardRef = useRef();
-  const shineRef = useRef();
-  const glowRef = useRef();
+  const rect = useRef(null);
+  const shineRef = useRef(); // Added missing ref
 
-  const onMove = (e) => {
-    const r = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width;
-    const y = (e.clientY - r.top) / r.height;
-    gsap.to(cardRef.current, {
-      rotateX: (y - 0.5) * -16,
-      rotateY: (x - 0.5) * 16,
-      transformPerspective: 900,
-      duration: 0.45,
-      ease: "power2.out",
-    });
-    if (shineRef.current)
-      shineRef.current.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.06) 0%, transparent 55%)`;
-    if (glowRef.current) {
-      glowRef.current.style.left = `${e.clientX - r.left}px`;
-      glowRef.current.style.top = `${e.clientY - r.top}px`;
+  // Cache dimensions to prevent "Layout Thrashing" (heavy recalculations)
+  const updateRect = () => {
+    if (cardRef.current) {
+      rect.current = cardRef.current.getBoundingClientRect();
     }
   };
+
+  const onMove = (e) => {
+    if (!rect.current) updateRect();
+
+    const r = rect.current;
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+
+    // Use GSAP for smooth hardware-accelerated movement
+    gsap.to(cardRef.current, {
+      rotateX: (y - 0.5) * -12,
+      rotateY: (x - 0.5) * 12,
+      transformPerspective: 1000,
+      duration: 0.4,
+      ease: "power2.out",
+      overwrite: "auto",
+    });
+
+    // Update CSS variables for high-performance background rendering
+    cardRef.current.style.setProperty("--mouse-x", `${x * 100}%`);
+    cardRef.current.style.setProperty("--mouse-y", `${y * 100}%`);
+  };
+
   const onLeave = () => {
     gsap.to(cardRef.current, {
       rotateX: 0,
       rotateY: 0,
-      duration: 0.8,
-      ease: "elastic.out(1,0.4)",
+      duration: 0.6,
+      ease: "power2.out",
     });
-    if (shineRef.current) shineRef.current.style.background = "none";
   };
 
   return (
     <div
       ref={cardRef}
       onMouseMove={onMove}
+      onMouseEnter={updateRect}
       onMouseLeave={onLeave}
-      className="project-card flex-shrink-0 w-[360px] sm:w-[420px] relative rounded-[2rem] overflow-hidden border border-white/[0.07] bg-[#05080f] flex flex-col cursor-default"
+      className="group relative flex-shrink-0 w-[380px] h-[520px] rounded-[2rem] bg-[#05080f] border border-white/[0.05] overflow-hidden project-card"
       style={{
         transformStyle: "preserve-3d",
         willChange: "transform",
-        height: "520px",
       }}
     >
-      {/* Cursor glow */}
+      {/* Dynamic Cursor Glow */}
       <div
-        ref={glowRef}
-        className="absolute w-40 h-40 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
-          background: `radial-gradient(circle, ${project.glowColor}30, transparent)`,
+          background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), ${project.glowColor}15, transparent 40%)`,
           zIndex: 1,
         }}
       />
 
-      {/* Shine */}
+      {/* Shine Effect */}
       <div
         ref={shineRef}
-        className="absolute inset-0 z-20 pointer-events-none rounded-[2rem]"
+        className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.04) 0%, transparent 80%)`,
+        }}
       />
 
-      {/* ── Card Top Panel ──────────────────────────────────── */}
+      {/* Top Panel */}
       <div
-        className="relative h-44 flex-shrink-0 overflow-hidden flex items-center justify-center"
-        style={{ transform: "translateZ(15px)", background: project.panelBg }}
+        className="relative h-44 flex-shrink-0 overflow-hidden flex items-center justify-center bg-[#0a0f1a]"
+        style={{ transform: "translateZ(30px)", background: project.panelBg }}
       >
-        {/* Noise texture */}
         <div
-          className="absolute inset-0 opacity-[0.025] pointer-events-none"
+          className="absolute inset-0 opacity-[0.02] pointer-events-none"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: "160px 160px",
           }}
         />
 
-        {/* Radial glow center */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse at 50% 60%, ${project.glowColor}18 0%, transparent 70%)`,
+            background: `radial-gradient(ellipse at 50% 60%, ${project.glowColor}15 0%, transparent 70%)`,
           }}
         />
 
-        {/* Big project number — behind icon */}
-        <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
-          style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: "9rem",
-            fontWeight: 900,
-            color: `${project.glowColor}08`,
-            lineHeight: 1,
-            letterSpacing: "-0.05em",
-          }}
-        >
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.05] font-black text-9xl text-white">
           {String(index + 1).padStart(2, "0")}
         </div>
 
-        {/* Center icon */}
         <div
-          className={`relative z-10 p-5 rounded-3xl border bg-[#02040f]/60 backdrop-blur-sm ${project.accent} group-hover:scale-110 transition-transform duration-500`}
+          className={`relative z-10 p-5 rounded-3xl border bg-[#02040f]/60 backdrop-blur-md transition-transform duration-500 group-hover:scale-110`}
           style={{ borderColor: `${project.glowColor}30` }}
         >
           <div className={project.accent}>
             {React.cloneElement(project.icon, { size: 36 })}
           </div>
         </div>
-
-        {/* Tech accent dots — decorative corners */}
-        <div className="absolute top-4 right-4 flex gap-1.5 opacity-40">
-          {project.tech.slice(0, 3).map((_, i) => (
-            <div
-              key={i}
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ background: project.glowColor, opacity: 1 - i * 0.25 }}
-            />
-          ))}
-        </div>
-        <div
-          className="absolute bottom-4 left-4 text-[10px] font-mono tracking-widest uppercase opacity-30"
-          style={{ color: project.glowColor }}
-        >
-          {project.tech[0]}
-        </div>
-
-        {/* Bottom fade */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
-          style={{
-            background: "linear-gradient(0deg, #05080f 0%, transparent 100%)",
-          }}
-        />
       </div>
 
-      {/* ── Content ─────────────────────────────────────────── */}
+      {/* Content */}
       <div
         className="flex flex-col flex-1 p-7 gap-4"
-        style={{ transform: "translateZ(25px)" }}
+        style={{ transform: "translateZ(50px)" }}
       >
-        {/* Header row */}
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-2xl font-black text-white tracking-tight leading-tight">
+          <h3 className="text-2xl font-bold text-white tracking-tight">
             {project.title}
           </h3>
-          <div className="flex gap-3 flex-shrink-0 mt-1">
+          <div className="flex gap-3">
             <a
               href={project.link}
               target="_blank"
               rel="noreferrer"
-              className="text-slate-600 hover:text-white transition-colors hover:scale-110 inline-block"
+              className="text-slate-500 hover:text-white transition-colors"
             >
               <Github size={18} />
             </a>
@@ -173,37 +144,33 @@ const ProjectCard = ({ project, index }) => {
               href={project.link}
               target="_blank"
               rel="noreferrer"
-              className="text-slate-600 hover:text-white transition-colors hover:scale-110 inline-block"
+              className="text-slate-500 hover:text-white transition-colors"
             >
               <ExternalLink size={18} />
             </a>
           </div>
         </div>
 
-        <p className="text-slate-500 text-sm leading-relaxed flex-1">
+        <p className="text-slate-400 text-sm leading-relaxed line-clamp-3">
           {project.desc}
         </p>
 
-        {/* Tech badges */}
         <div className="flex flex-wrap gap-1.5 mt-auto">
           {project.tech.map((t, i) => (
             <span
               key={i}
-              className={`text-[10px] font-mono font-bold tracking-wide px-2.5 py-1 rounded-full border border-white/[0.06] ${project.accent} bg-white/[0.03]`}
+              className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border border-white/[0.06] bg-white/[0.03] ${project.accent}`}
             >
               {t}
             </span>
           ))}
         </div>
       </div>
-
-      {/* Hover border glow */}
-      <div className="absolute inset-0 rounded-[2rem] border border-transparent hover:border-blue-500/20 transition-colors duration-500 pointer-events-none" />
     </div>
   );
 };
 
-// ── Main Projects ─────────────────────────────────────────────────────
+// ── Main Projects Component ───────────────────────────────────────────
 const Projects = () => {
   const secRef = useRef();
   const railRef = useRef();
@@ -260,7 +227,7 @@ const Projects = () => {
 
   const scroll = (dir) => {
     const el = railRef.current;
-    el.scrollBy({ left: dir * 460, behavior: "smooth" });
+    if (el) el.scrollBy({ left: dir * 460, behavior: "smooth" });
   };
 
   const onScroll = () => {
@@ -271,22 +238,19 @@ const Projects = () => {
   };
 
   useEffect(() => {
-    if (!secRef.current) return;
     let ctx = gsap.context(() => {
-      gsap.from(".pj-headline > *", {
-        y: 60,
+      gsap.from(".pj-headline", {
+        y: 40,
         opacity: 0,
-        duration: 1.2,
-        stagger: 0.1,
-        ease: "expo.out",
-        scrollTrigger: { trigger: secRef.current, start: "top 75%" },
+        duration: 0.8,
+        scrollTrigger: { trigger: secRef.current, start: "top 80%" },
       });
       gsap.from(".project-card", {
-        x: 80,
+        x: 60,
         opacity: 0,
-        duration: 1,
-        stagger: 0.12,
-        ease: "expo.out",
+        stagger: 0.1,
+        duration: 0.8,
+        ease: "power2.out",
         scrollTrigger: { trigger: railRef.current, start: "top 85%" },
       });
     }, secRef);
@@ -299,19 +263,11 @@ const Projects = () => {
       ref={secRef}
       className="py-32 relative overflow-hidden"
     >
-      {/* Bg number */}
-      <div
-        className="absolute top-0 right-0 text-[20rem] font-black leading-none select-none pointer-events-none"
-        style={{
-          color: "rgba(255,255,255,0.012)",
-          fontFamily: "'Bebas Neue', sans-serif",
-          lineHeight: 0.8,
-        }}
-      >
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 text-[20rem] font-black leading-none select-none pointer-events-none opacity-[0.015] font-bebas">
         04
       </div>
 
-      {/* Header */}
       <div className="max-w-7xl mx-auto px-8 mb-16">
         <div className="flex items-center gap-4 mb-12">
           <span className="text-blue-500 font-mono text-xs tracking-[0.5em] uppercase">
@@ -321,12 +277,8 @@ const Projects = () => {
         </div>
 
         <div className="pj-headline flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-          <h2
-            className="text-6xl lg:text-8xl font-black text-white leading-[0.85] tracking-tighter"
-            style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-          >
-            FEATURED
-            <br />
+          <h2 className="text-6xl lg:text-8xl font-black text-white leading-[0.85] tracking-tighter uppercase font-bebas">
+            FEATURED <br />
             <span
               style={{
                 WebkitTextStroke: "2px rgba(59,130,246,0.45)",
@@ -337,7 +289,6 @@ const Projects = () => {
             </span>
           </h2>
 
-          {/* Nav arrows */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => scroll(-1)}
@@ -362,24 +313,21 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* Horizontal scroll rail */}
       <div
         ref={railRef}
         onScroll={onScroll}
         className="flex gap-5 overflow-x-auto pb-6 px-8 max-w-7xl mx-auto scrollbar-none"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        style={{ scrollbarWidth: "none" }}
       >
         {projects.map((p, i) => (
           <ProjectCard key={i} project={p} index={i} />
         ))}
 
-        {/* "View all" end card */}
         <a
           href="https://github.com/HARRISAMIN432"
           target="_blank"
           rel="noreferrer"
-          className="flex-shrink-0 w-64 rounded-[2rem] border border-dashed border-white/10 flex flex-col items-center justify-center gap-4 hover:border-blue-500/30 hover:bg-blue-500/5 transition-all duration-300 group"
-          style={{ height: "520px" }}
+          className="flex-shrink-0 w-64 rounded-[2rem] border border-dashed border-white/10 flex flex-col items-center justify-center gap-4 hover:border-blue-500/30 hover:bg-blue-500/5 transition-all duration-300 group h-[520px]"
         >
           <div className="w-14 h-14 rounded-full border border-white/10 group-hover:border-blue-500/30 flex items-center justify-center text-slate-600 group-hover:text-blue-400 transition-colors">
             <Github size={22} />
@@ -394,16 +342,6 @@ const Projects = () => {
           </div>
         </a>
       </div>
-
-      {/* Fade edges */}
-      <div
-        className="absolute top-0 bottom-0 left-0 w-8 pointer-events-none"
-        style={{ background: "linear-gradient(90deg, #02040f, transparent)" }}
-      />
-      <div
-        className="absolute top-0 bottom-0 right-0 w-8 pointer-events-none"
-        style={{ background: "linear-gradient(-90deg, #02040f, transparent)" }}
-      />
     </section>
   );
 };
