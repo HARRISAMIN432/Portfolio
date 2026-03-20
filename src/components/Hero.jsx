@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Download, ArrowDownRight, Zap } from "lucide-react";
 import gsap from "gsap";
 import HeroCanvas from "./canvas/HeroCanvas";
+import resume from "../assets/Harris_Resume.pdf";
 
 // ── Glitch Text ───────────────────────────────────────────────────────
 const GlitchText = ({ text, className }) => {
@@ -234,7 +235,7 @@ const Hero = () => {
             </MagBtn>
 
             <a
-              href="react-vite-deploy/Harris_Resume.pdf"
+              href={resume}
               download
               className="group flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/10 text-slate-400 text-sm font-bold hover:text-white hover:border-white/30 transition-all duration-300"
             >
