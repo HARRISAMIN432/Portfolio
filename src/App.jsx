@@ -1,25 +1,33 @@
-import React from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import About from './components/About';
-import Skills from './components/Skills';
-import Projects from './components/Projects';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import useActiveSection from './hooks/useActiveSection';
+import React from "react";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import About from "./components/About";
+import Skills from "./components/Skills";
+import Projects from "./components/Projects";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
+import Scene from "./components/canvas/Scene";
 
 function App() {
-  const { activeSection, setActiveSection } = useActiveSection();
-
   return (
-    <div className="min-h-screen">
-      <Header activeSection={activeSection} setActiveSection={setActiveSection} />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
-      <Footer />
+    <div className="relative min-h-screen bg-[#030712]">
+      {/* 1. Background Layer (Lowest Z-Index) */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Scene />
+      </div>
+
+      {/* 2. Content Layer (Higher Z-Index) */}
+      <div className="relative z-10">
+        <Header />
+        <main>
+          <Hero />
+          <About />
+          <Skills />
+          <Projects />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }

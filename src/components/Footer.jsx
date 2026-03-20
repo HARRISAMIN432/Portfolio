@@ -1,60 +1,30 @@
-import React from 'react';
-import { Github, Linkedin, Mail, Heart } from 'lucide-react';
-
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
-  const socialLinks = [
-    {
-      icon: <Github className="w-5 h-5" />,
-      href: "https://github.com/HARRISAMIN432",
-      label: "GitHub"
-    },
-    {
-      icon: <Linkedin className="w-5 h-5" />,
-      href: "http:downd",
-      label: "LinkedIn"
-    },
-    {
-      icon: <Mail className="w-5 h-5" />,
-      href: "mailto:harrisaminjutt@gmail.com",
-      label: "Email"
-    }
-  ];
-
   return (
-    <footer className="bg-gray-800 py-12">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-6 md:mb-0">
-            <h3 className="text-2xl font-bold text-white mb-2">
-              Muhammad Harris Amin
-            </h3>
-            <p className="text-gray-400">
-              Full-Stack Developer & Competitive Programmer
-            </p>
-          </div>
-
-          <div className="flex space-x-6">
-            {socialLinks.map((link, index) => (
-              <a
-                key={index}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={link.label}
-                className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
-              >
-                {link.icon}
-              </a>
-            ))}
-          </div>
+    <footer className="py-12 px-6 border-t border-white/5 bg-[#050816]">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center opacity-60">
+        <div className="text-sm text-slate-400 font-mono">
+          &copy; {new Date().getFullYear()} MUHAMMAD HARRIS AMIN
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-          <p className="text-gray-400 flex items-center justify-center space-x-2">
-            <span>&copy; {currentYear} Muhammad Harris Amin.</span>            
-          </p>
+        <div className="flex space-x-8 mt-6 md:mt-0">
+          <a
+            href="https://github.com/HARRISAMIN432"
+            className="text-white hover:text-blue-500"
+          >
+            GITHUB
+          </a>
+          <a
+            href="https://www.linkedin.com/in/harris-amin-32a90a2a7/"
+            className="text-white hover:text-blue-500"
+          >
+            LINKEDIN
+          </a>
+          <a
+            href="mailto:harrisaminjutt@gmail.com"
+            className="text-white hover:text-blue-500"
+          >
+            EMAIL
+          </a>
         </div>
       </div>
     </footer>

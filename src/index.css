@@ -3,27 +3,60 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Prevent layout shift on scrollbar appearance */
+    scrollbar-gutter: stable;
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+    @apply bg-[#030712] text-slate-200 antialiased;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+      "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* The "Pro" Secret: Subtle Grainy Noise Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03; /* Very subtle */
+    z-index: 9999;
+    pointer-events: none;
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    filter: contrast(150%) brightness(100%);
   }
 }
 
+/* Modern Minimalist Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #374151;
+  background: #030712; /* Matches your background */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3b82f6;
-  border-radius: 4px;
+  background: #1e293b; /* Deep slate */
+  border: 2px solid #030712; /* Creates a padding effect */
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2563eb;
+  background: #3b82f6; /* Electric Blue on hover */
+}
+
+/* Custom Text Selection Color */
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: #fff;
+}
+
+button {
+  cursor: pointer;
 }

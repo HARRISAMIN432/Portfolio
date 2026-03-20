@@ -1,148 +1,173 @@
-import React from "react";
-import { Code, Trophy, Brain, Database, Target } from "lucide-react";
+import React, { useEffect, useRef } from "react";
+import {
+  Code,
+  Trophy,
+  Database,
+  Cpu,
+  GraduationCap,
+  ChevronRight,
+  Terminal,
+} from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const About = () => {
-  const highlights = [
-    {
-      icon: <Code className="w-8 h-8" />,
-      title: "Full-Stack Development",
-      description:
-        "Expert in React, Node.js, Express, mongDB and Tailwind CSS, building responsive and scalable web applications",
-      color: "from-blue-500 to-cyan-500",
-    },
-    {
-      icon: <Trophy className="w-8 h-8" />,
-      title: "Competitive Programming",
-      description:
-        "350+ LeetCode & 150+ Codeforces problems solved, mastering algorithmic thinking",
-      color: "from-amber-500 to-orange-500",
-    },
-    {
-      icon: <Database className="w-8 h-8" />,
-      title: "Database Architecture",
-      description:
-        "Worked in both SQL and NoSQL databases, ensuring data integrity and performance",
-      color: "from-green-500 to-emerald-500",
-    },
-  ];
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    // Check if element exists before animating to prevent NaN/Undefined errors
+    if (!sectionRef.current) return;
+
+    let ctx = gsap.context(() => {
+      // Reveal the "Terminal" and Text
+      gsap.from(".reveal-up", {
+        y: 80,
+        opacity: 0,
+        duration: 1.2,
+        stagger: 0.2,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+        },
+      });
+
+      // Subtle pulse for the "Live" indicator
+      gsap.to(".live-dot", {
+        scale: 1.5,
+        opacity: 0,
+        repeat: -1,
+        duration: 2,
+        ease: "sine.inOut",
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const stats = [
-    { number: "350+", label: "LeetCode Problems" },
-    { number: "130+", label: "Codeforces Solutions" },
-    { number: "10+", label: "Projects" },
+    { label: "LeetCode Solved", value: "500+", color: "text-orange-400" },
+    {
+      label: "Codeforces Rating",
+      value: "1100+",
+      color: "text-blue-400",
+    },
+    { label: "Academic CGPA", value: "3.75 / 4.0", color: "text-emerald-400" },
+    { label: "Open Source", value: "15+ Repos", color: "text-purple-400" },
   ];
 
   return (
-    <section id="about" className="py-24 bg-white">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            About me
-          </h2>
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            Transforming complex problems into elegant solutions through
-            innovative code and creative thinking
-          </p>
-        </div>
+    <section
+      id="about"
+      ref={sectionRef}
+      className="py-32 relative  overflow-hidden"
+    >
+      {/* Background Decorative Text (Watermark) */}
+      <div className="absolute top-10 left-10 text-[15rem] font-black text-white/[0.02] select-none pointer-events-none uppercase">
+        Logic
+      </div>
 
-        <div className="flex flex-wrap justify-center gap-6 mb-20">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center group">
-              <div className="bg-gray-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 min-w-[150px] border border-gray-200">
-                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-600 font-medium text-sm md:text-base">
-                  {stat.label}
-                </div>
-              </div>
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="grid lg:grid-cols-12 gap-16 items-center">
+          {/* LEFT: The Narrative */}
+          <div className="lg:col-span-6">
+            <div className="reveal-up inline-flex items-center gap-3 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/5 mb-6">
+              <span className="relative flex h-2 w-2">
+                <span className="live-dot absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </span>
+              <span className="text-[10px] font-bold tracking-[0.2em] text-blue-400 uppercase">
+                Engineering Identity
+              </span>
             </div>
-          ))}
-        </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          <div className="space-y-8">
-            <div className="bg-gray-50 rounded-3xl p-8 shadow-lg border border-gray-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Brain className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">
-                  The Journey
-                </h3>
-              </div>
+            <h2 className="reveal-up text-5xl md:text-7xl font-black text-white leading-[0.9] tracking-tighter mb-8">
+              BUILDING <br />
+              <span className="text-slate-500 italic font-light underline decoration-blue-500/30 underline-offset-8">
+                SCALABLE SOLUTIONS.
+              </span>
+            </h2>
 
-              <div className="space-y-6 text-gray-700 leading-relaxed">
-                <p className="text-lg">
-                  Hi, I'm a{" "}
-                  <span className="font-semibold text-blue-600">
-                    full-stack developer
-                  </span>{" "}
-                  who loves turning ideas into real-world applications. I've
-                  solved{" "}
-                  <span className="font-semibold">
-                    350+ problems on LeetCode
-                  </span>{" "}
-                  and <span className="font-semibold">150+ on Codeforces</span>,
-                  which has sharpened my problem-solving and coding skills.
-                </p>
+            <p className="reveal-up text-xl text-slate-400 font-light leading-relaxed mb-10 max-w-xl">
+              Computer Science student at{" "}
+              <span className="text-white font-medium">UET Lahore</span>. I
+              don't just build apps; I architect systems where every byte
+              counts. My foundation is built on high-speed algorithms and
+              scalable MERN architectures.
+            </p>
 
-                <p className="text-lg">
-                  Worked with{" "}
-                  <span className="font-semibold text-purple-600">
-                    C++, Python, JavaScript, and C#
-                  </span>{" "}
-                  along with frameworks like React and Node.js. From building
-                  clean UIs to developing reliable backend systems, I enjoy
-                  creating software that's fast, scalable, and easy to use.
-                </p>
-
-                <p className="text-lg">
-                  I'm currently a{" "}
-                  <span className="font-semibold text-green-600">
-                    Computer Science student at UET Lahore
+            <div className="reveal-up space-y-4">
+              {[
+                "Full-Stack Web Applications (React + Node.js)",
+                "Real-Time Applications with Socket.io",
+                "REST API Development & Authentication",
+              ].map((text, i) => (
+                <div key={i} className="flex items-center gap-3 text-slate-300">
+                  <ChevronRight size={16} className="text-blue-500" />
+                  <span className="font-mono text-sm tracking-tight">
+                    {text}
                   </span>
-                  . Based in Lahore, Pakistan, I'm always curious about new
-                  technologies and passionate about building projects that make
-                  a difference.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
-                <Target className="w-5 h-5 text-blue-600" />
-                <span className="text-blue-800 font-medium">
-                  Always learning, always building, always innovating
-                </span>
-              </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="space-y-6">
-            {highlights.map((item, index) => (
-              <div
-                key={index}
-                className="group cursor-pointer transition-all duration-300 hover:scale-105"
-              >
-                <div className="bg-gray-50 rounded-2xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <div className="text-white">{item.icon}</div>
-                    </div>
+          {/* RIGHT: The Stats Terminal */}
+          <div className="lg:col-span-6 reveal-up">
+            <div className="relative group">
+              {/* Outer Glow */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-[2rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
 
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-3">
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors">
-                        {item.description}
-                      </p>
+              <div className="relative bg-[#0a0f1e] border border-white/10 rounded-[2rem] p-8 md:p-12 overflow-hidden shadow-2xl">
+                {/* Terminal Header */}
+                <div className="flex items-center gap-2 mb-10 opacity-40">
+                  <div className="w-3 h-3 rounded-full bg-red-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                  <span className="ml-4 font-mono text-xs tracking-widest uppercase">
+                    system_stats.sh
+                  </span>
+                </div>
+
+                <div className="space-y-8">
+                  {stats.map((stat, i) => (
+                    <div key={i} className="group/stat">
+                      <div className="flex justify-between items-end mb-2">
+                        <span className="text-slate-500 font-mono text-xs uppercase tracking-widest">
+                          {stat.label}
+                        </span>
+                        <span className={`text-2xl font-black ${stat.color}`}>
+                          {stat.value}
+                        </span>
+                      </div>
+                      <div className="h-[1px] w-full bg-white/5 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 w-full translate-x-[-100%] group-hover/stat:translate-x-0 transition-transform duration-700"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer Icon */}
+                <div className="mt-12 pt-8 border-t border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-blue-500/10 rounded-xl text-blue-400">
+                      <Terminal size={20} />
+                    </div>
+                    <div>
+                      <div className="text-white font-bold text-sm tracking-tight">
+                        Muhammad Harris Amin
+                      </div>
+                      <div className="text-slate-500 text-[10px] uppercase font-bold tracking-widest">
+                        Full-Stack Engineer
+                      </div>
                     </div>
                   </div>
+                  <GraduationCap className="text-slate-700" size={32} />
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
