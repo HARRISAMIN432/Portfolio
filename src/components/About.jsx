@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import me from "../assets/me.jpg";
+import me from "../assets/me.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 
